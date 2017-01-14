@@ -31,7 +31,6 @@ stock  isTimeInPastOf(hour, minute = 99, second = 99, hour2, minute2 = 98, secon
 	return hour < hour2 || hour == hour2 && (minute < minute2 || (minute == minute2 && second < second))
 }
 
-
 stock isLeapYear(year)
 {
 	return (year % 4) || ((year % 100 == 0) && (year % 400)) ? false : true;
@@ -45,4 +44,43 @@ stock getDaysOfMonth(year, month)
 stock isDateValid(year, month, day)
 {
 	return month >= 1 && month <= 12 && day >= 1 && day <= getDaysOfMonth(year, month);
+}
+
+stock dateToDays(year, month, day)
+{
+	new days = 0;
+
+	//Start at year 1 after christi
+	for(new i = 1; i < year; i++)
+	{
+		days += isLeapYear(i) ? 366 : 365;
+	}
+
+	for(new i = 1; i < month; i++)
+	{
+		days += getDaysOfMonth(year, month);
+	}
+
+	days += day;
+
+	return days;
+}
+
+stock getDateDiff(year, month, day, year2, month2, day2)
+{
+	if(!isDateValid(year, month, day) || !isDateValid(year2, month2, day2))
+	{
+		return -1;
+	}
+
+	new difference = dateToDays(year, month, day) - dateToDays(year2, month2, day2);
+
+	return difference < 0 ? difference * -1 : difference;
+}
+
+stock getTimeDiff(hour, minute, second, hour2, minute2, second2)
+{
+	new difference = (((hour * 60 * 60) + (minute * 60) + seconds) - ((hour2 * 60 * 60) + (minute2 * 60) + seconds2));
+
+	return difference < 0 ? difference * -1 : difference;
 }
