@@ -148,6 +148,7 @@ stock GetTimeDiff(hour, minute, second, hour2, minute2, second2)
 }
 
 //http://wiki.sa-mp.com/wiki/Code_Snippets#Split
+static split(const strsrc[], strdest[][], delimiter)
 {
     new i, li;
     new aNum;
