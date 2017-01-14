@@ -1,5 +1,10 @@
 #include <a_samp>
 
+#define YYYY_DD_MM 0
+#define YYYY_MM_DD 1
+#define DD_MM_YYYY 2
+#define MM_DD_YYYY 3
+
 //Just because i like it
 #define isDateInPast IsDateInPast
 #define isTimeInPast IsTimeInPast
@@ -139,4 +144,84 @@ stock GetTimeDiff(hour, minute, second, hour2, minute2, second2)
 	new difference = (((hour * 60 * 60) + (minute * 60) + seconds) - ((hour2 * 60 * 60) + (minute2 * 60) + seconds2));
 
 	return difference < 0 ? difference * -1 : difference;
+}
+
+//http://wiki.sa-mp.com/wiki/Code_Snippets#Split
+stock split(const strsrc[], strdest[][], delimiter)
+{
+    new i, li;
+    new aNum;
+    new len;
+    while(i <= strlen(strsrc))
+    {
+        if(strsrc[i] == delimiter || i == strlen(strsrc))
+        {
+            len = strmid(strdest[aNum], strsrc, li, i, 128);
+            strdest[aNum][len] = 0;
+            li = i+1;
+            aNum++;
+        }
+        i++;
+    }
+    return 1;
+}
+
+stock getDateFromString(dateFormat, separator, date[], &year, &month, &day)
+{
+	new data[3][5];
+	split(date, data, separator);
+	new number[3];
+
+	for(new i = 0; i < sizeof(data); i++)
+	{
+		printf("%s", data[i]);
+	}
+
+	number[0] = strval(data[0]);
+	number[1] = strval(data[1]);
+	number[2] = strval(data[2]);
+
+	for(new i = 0; i < sizeof(number); i++)
+	{
+		if(number[i] == 0)
+		{
+			year = month = day = -1;
+			return 0;
+		}
+	}
+
+	switch(dateFormat)
+	{
+		case YYYY_DD_MM:
+		{
+			year = number[0];
+			month = number[2];
+			day = number[1];
+		}
+		case YYYY_MM_DD:
+		{
+			year = number[0];
+			month = number[1];
+			day = number[2];	
+		}
+		case DD_MM_YYYY:
+		{
+			year = number[2];
+			month = number[1];
+			day = number[0];
+		}
+		case MM_DD_YYYY:
+		{
+			year = number[2];
+			month = number[0];
+			day = number[1];
+		}
+		default:
+		{
+			year = month = day = -1;
+			return 0;
+		}
+	}
+
+	return 1;
 }
