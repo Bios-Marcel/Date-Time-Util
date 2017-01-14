@@ -23,52 +23,26 @@ stock isDateTimeInPastOf(year, month, day, hour, minute, second, year2, month2, 
 
 stock isDateInPastOf(year, month = 99, day = 99, year2, month2 = 98, day2 = 98)
 {
-	if(year < year2)
-	{
-		return true;
-	}
-
-	if(year == year2)
-	{
-		if(month < month2)
-		{
-			return true;
-		}
-
-		if(month == month2)
-		{
-			if(day < day2)
-			{
-				return true;
-			}
-		}
-	}
-
-	return false;
+	return year < year2 || year == year2 && (month < month2 || (month == month2 && day < day2));
 }
 
 stock  isTimeInPastOf(hour, minute = 99, second = 99, hour2, minute2 = 98, second2 = 98)
 {
-	if(hour < hour2)
-	{
-		return true;
-	}
+	return hour < hour2 || hour == hour2 && (minute < minute2 || (minute == minute2 && second < second))
+}
 
-	if(hour == hour2)
-	{
-		if(minute < minute2)
-		{
-			return true;
-		}
 
-		if(minute == minute2)
-		{
-			if(second < second2)
-			{
-				return true;
-			}
-		}
-	}
+stock isLeapYear(year)
+{
+	return (year % 4) || ((year % 100 == 0) && (year % 400)) ? false : true;
+}
 
-	return false;
+stock getDaysOfMonth(year, month)
+{
+	return (month == 2) ? (28 + isLeapYear(year)) : 31 - (month - 1) % 7 % 2;
+}
+
+stock isDateValid(year, month, day)
+{
+	return month >= 1 && month <= 12 && day >= 1 && day <= getDaysOfMonth(year, month);
 }
