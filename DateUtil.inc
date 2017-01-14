@@ -21,7 +21,7 @@ stock isDateTimeInPastOf(year, month, day, hour, minute, second, year2, month2, 
 	return isDateInPastOf(year, month, day, year2, month2, day2) && isTimeInPastOf(hour, minute, second, hour2, minute2, second2);
 }
 
-stock isDateInPastOf(year, month, day, year2, month2, day2)
+stock isDateInPastOf(year, month = 99, day = 99, year2, month2 = 98, day2 = 98)
 {
 	if(year < year2)
 	{
@@ -47,7 +47,7 @@ stock isDateInPastOf(year, month, day, year2, month2, day2)
 	return false;
 }
 
-stock  isTimeInPastOf(hour, minute, second, hour2, minute2, second2)
+stock  isTimeInPastOf(hour, minute = 99, second = 99, hour2, minute2 = 98, second2 = 98)
 {
 	if(hour < hour2)
 	{
