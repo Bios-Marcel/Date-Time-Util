@@ -19,6 +19,7 @@
 #define dateToDays DateToDays
 #define getTimeDiff GetTimeDiff
 #define getDateDiff GetDateDiff
+#define getDateFromString GetDateFromString
 
 stock IsDateInPast(year, month = 99, day = 99)
 {
@@ -147,7 +148,6 @@ stock GetTimeDiff(hour, minute, second, hour2, minute2, second2)
 }
 
 //http://wiki.sa-mp.com/wiki/Code_Snippets#Split
-stock split(const strsrc[], strdest[][], delimiter)
 {
     new i, li;
     new aNum;
@@ -166,7 +166,7 @@ stock split(const strsrc[], strdest[][], delimiter)
     return 1;
 }
 
-stock getDateFromString(dateFormat, separator, date[], &year, &month, &day)
+stock GetDateFromString(dateFormat, separator, date[], &year, &month, &day)
 {
 	new data[3][5];
 	split(date, data, separator);
