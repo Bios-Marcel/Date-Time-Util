@@ -1,28 +1,14 @@
 #include <a_samp>
 
 //Start at year 1 after christi
-#define INITIAL_YEAR 1
+#if !defined INITIAL_YEAR
+	#define INITIAL_YEAR 1
+#endif
 
 #define YYYY_DD_MM 0
 #define YYYY_MM_DD 1
 #define DD_MM_YYYY 2
 #define MM_DD_YYYY 3
-
-//Just because i like it
-#define isDateInPast IsDateInPast
-#define isTimeInPast IsTimeInPast
-#define isDateInPastOf IsTimeInPastOf
-#define isTimeInPastOf IsDateInPastOf
-#define isDateTimeInPast IsDateTimeInPastOf
-#define isDateValid IsDateValid
-#define isTimeValid IsTimeValid
-#define isDateTimeValid IsDateTimeValid
-#define isLeapYear IsLeapYear
-#define getDaysOfMonth GetDaysOfMonth
-#define dateToDays DateToDays
-#define getTimeDiff GetTimeDiff
-#define getDateDiff GetDateDiff
-#define getDateFromString GetDateFromString
 
 stock IsDateInPast(year, month = 99, day = 99)
 {
@@ -37,7 +23,7 @@ stock IsTimeInPast(hour, minute = 99, second = 99)
 	new actualHour, actualMinute, actualSecond;
 	gettime(actualHour, actualMinute, actualSecond);
 
-	return IsTimeInPastOf(hour, minute, second, acutalHour, actualMinute, actualSecond);
+	return IsTimeInPastOf(hour, minute, second, actualHour, actualMinute, actualSecond);
 }
 
 stock IsDateTimeInPastOf(year, month, day, hour, minute, second, year2, month2, day2, hour2, minute2, second2)
@@ -68,12 +54,17 @@ stock  IsTimeInPastOf(hour, minute = 99, second = 99, hour2, minute2 = 98, secon
 		return -1;
 	}
 
-	return hour < hour2 || hour == hour2 && (minute < minute2 || (minute == minute2 && second < second))
+	return hour < hour2 || hour == hour2 && (minute < minute2 || (minute == minute2 && second < second));
 }
 
 stock IsLeapYear(year)
 {
 	return (year % 4) || ((year % 100 == 0) && (year % 400)) ? false : true;
+}
+
+stock GetDaysOfYear(year)
+{
+	return IsLeapYear(year) ? 366 : 365;
 }
 
 stock GetDaysOfMonth(year, month)
@@ -91,9 +82,9 @@ stock IsDateValid(year, month, day)
 	return month >= 1 && month <= 12 && day >= 1 && day <= GetDaysOfMonth(year, month);
 }
 
-stock IsTimeValid(hour, minute, seconds)
+stock IsTimeValid(hour, minute, second)
 {
-	return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59 && second >= 0 && seconds <= 59;
+	return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59 && second >= 0 && second <= 59;
 }
 
 stock IsDateTimeValid(year, month, day, hour, minute, second)
@@ -134,7 +125,7 @@ stock DaysToDate(days, &year, &month, &day)
 		if(days >= 366)
 		{
 			year++;
-			if(isLeapYear(year))
+			if(IsLeapYear(year))
 			{
 				days -= 366;
 			}
@@ -209,6 +200,51 @@ stock GetTimeDiff(hour, minute, second, hour2, minute2, second2)
 	return difference < 0 ? difference * -1 : difference;
 }
 
+stock IsTimeInRangeOf(hour, minute, second, hourEarlier, minuteEarlier, secondEarlier, hourLater, minuteLater, secondLater)
+{
+	if(hour < hourEarlier)
+	{
+		return 0;
+	}
+	else if(hour == hourEarlier)
+	{
+		if(minute < minuteEarlier)
+		{
+			return 0;
+		}
+		else if(minute == minuteEarlier)
+		{
+			if(second < secondEarlier)
+			{
+				return 0;
+			}
+		}
+	}
+	else
+	{
+		if(hour > hourLatest)
+		{
+			return 0;
+		}
+		else if(hour <= hourlatest)
+		{
+			if(minute > minuteLater)
+			{
+				return 0;
+			}
+			else if(minute <= minuteLater)
+			{
+				if(second > secondLater)
+				{
+					return 0;
+				}
+			}
+		}		
+	}
+
+	return 1;
+}
+
 stock AddDaysToDate(&year, &month, &day, amount)
 {
 	new days = DateToDays(year, month, day);
@@ -257,7 +293,7 @@ static stock split(const strsrc[], strdest[][], delimiter)
     return 1;
 }
 
-stock GetDateFromString(&year, &month, &day, date[], dateFormat = YYYY_MM_DD , separator = '/')
+stock StringToDate(&year, &month, &day, date[], dateFormat = YYYY_MM_DD , separator = '/')
 {
 	new data[3][5];
 	split(date, data, separator);
