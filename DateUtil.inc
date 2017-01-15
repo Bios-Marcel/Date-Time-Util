@@ -69,12 +69,7 @@ stock GetDaysOfYear(year)
 
 stock GetDaysOfMonth(year, month)
 {
-	if(month < 1 || month > 12)
-	{
-		return -1;
-	}
-
-	return (month == 2) ? (28 + IsLeapYear(year)) : 31 - (month - 1) % 7 % 2;
+	return (month < 1 || month > 12) ? -1 : (month == 2) ? (28 + IsLeapYear(year)) : 31 - (month - 1) % 7 % 2;
 }
 
 stock IsDateValid(year, month, day)
@@ -103,7 +98,7 @@ stock DateToDays(year, month, day)
 
 	for(new i = INITIAL_YEAR; i < year; i++)
 	{
-		days += IsLeapYear(i) ? 366 : 365;
+		days += GetDaysOfYear(i);
 	}
 
 	for(new i = 1; i < month; i++)
@@ -195,7 +190,7 @@ stock GetTimeDiff(hour, minute, second, hour2, minute2, second2)
 		return -1;
 	}
 
-	new difference = (((hour * 60 * 60) + (minute * 60) + seconds) - ((hour2 * 60 * 60) + (minute2 * 60) + seconds2));
+	new difference = (((hour * 60 * 60) + (minute * 60) + second) - ((hour2 * 60 * 60) + (minute2 * 60) + second2));
 
 	return difference < 0 ? difference * -1 : difference;
 }
@@ -298,11 +293,6 @@ stock StringToDate(&year, &month, &day, date[], dateFormat = YYYY_MM_DD , separa
 	new data[3][5];
 	split(date, data, separator);
 	new number[3];
-
-	for(new i = 0; i < sizeof(data); i++)
-	{
-		printf("%s", data[i]);
-	}
 
 	number[0] = strval(data[0]);
 	number[1] = strval(data[1]);
