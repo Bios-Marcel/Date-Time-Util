@@ -1,4 +1,5 @@
 #include <a_samp>
+#include <Development\DevTools>
 #include <DateUtil\DateUtil>
 
 public OnFilterScriptInit()
@@ -79,15 +80,4 @@ public OnFilterScriptInit()
 
 	print(" ");
 	print("End Unit Testing of Date / Time Util");
-}
-
-assertThat(title[], condition, expectedResult)
-{
-	if(condition == expectedResult)
-	{
-		return true;
-	}
-
-	printf("%s: Expected: %d Result: %d", title, expectedResult, condition);	
-	return false;
 }
