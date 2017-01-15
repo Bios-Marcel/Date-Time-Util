@@ -2,7 +2,7 @@
 
 ## What can i do with this library?
 
-This library contains a bunch of utlitiy functions for Dates and Times. See the full list [**here**](https://github.com/Bios-Marcel/DateUtil/wiki/Functions#functions).
+This library contains a bunch of utlitiy functions for Dates and Times. See the list [**here**](https://github.com/Bios-Marcel/DateUtil/wiki/Functions#functions)(Still incomplete).
 
 ## How do i install this?
 
