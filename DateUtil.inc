@@ -1,5 +1,8 @@
 #include <a_samp>
 
+//Start at year 1 after christi
+#define INITIAL_YEAR 1
+
 #define YYYY_DD_MM 0
 #define YYYY_MM_DD 1
 #define DD_MM_YYYY 2
@@ -107,20 +110,79 @@ stock DateToDays(year, month, day)
 
 	new days = 0;
 
-	//Start at year 1 after christi
-	for(new i = 1; i < year; i++)
+	for(new i = INITIAL_YEAR; i < year; i++)
 	{
 		days += IsLeapYear(i) ? 366 : 365;
 	}
 
 	for(new i = 1; i < month; i++)
 	{
-		days += GetDaysOfMonth(year, month);
+		days += GetDaysOfMonth(year, i);
 	}
 
 	days += day;
 
 	return days;
+}
+
+stock DaysToDate(days, &year, &month, &day)
+{
+	year = INITIAL_YEAR;
+	day = month = 0;
+	while(days > 0)
+	{
+		if(days >= 366)
+		{
+			year++;
+			if(isLeapYear(year))
+			{
+				days -= 366;
+			}
+			else
+			{
+				days -= 365;
+			}
+		}
+		else if(days == 365)
+		{
+			year++;
+			days -= 365;
+		}
+		else
+		{
+			while( days > 0)
+			{
+				for( new i = 1; i <= 12; i++)
+				{
+					new daysOfMonth = GetDaysOfMonth(year, i);
+					if(days >= daysOfMonth)
+					{
+						month++;
+						days -= daysOfMonth;
+					}
+					else
+					{
+						month++;
+						day = days;
+						days = 0;
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+stock TimeToSeconds(hour, minute, second)
+{
+	return (hour * 60 * 60) + (minute * 60) + second;
+}
+
+stock SecondsToTime(seconds, &hour, &minute, &second)
+{
+	hour = (seconds / 60) / 60;
+	minute = (seconds / 60) % 60;
+	second = seconds % 60;
 }
 
 stock GetDateDiff(year, month, day, year2, month2, day2)
@@ -147,8 +209,36 @@ stock GetTimeDiff(hour, minute, second, hour2, minute2, second2)
 	return difference < 0 ? difference * -1 : difference;
 }
 
+stock AddDaysToDate(&year, &month, &day, amount)
+{
+	new days = DateToDays(year, month, day);
+
+	days += amount;
+
+	DaysToDate(days, year, month, day);
+	return days;
+}
+
+stock AddSecondsToTime(&hour, &minute, &second, amount)
+{
+	new newHour = hour;
+	new newMinute = minute;
+	new newSecond = second;
+	new seconds = TimeToSeconds(newHour, newMinute, newSecond);
+	sconds += amount;
+
+	SecondsToTime(newHour, newMinute, newSecond);
+
+	if(IsTimeValid(newHour, newMinute, newSecond))
+	{
+		hour = newHour;
+		minute = newMinute;
+		second = newSecond;
+	}
+}
+
 //http://wiki.sa-mp.com/wiki/Code_Snippets#Split
-static split(const strsrc[], strdest[][], delimiter)
+static stock split(const strsrc[], strdest[][], delimiter)
 {
     new i, li;
     new aNum;
@@ -167,7 +257,7 @@ static split(const strsrc[], strdest[][], delimiter)
     return 1;
 }
 
-stock GetDateFromString(dateFormat, separator, date[], &year, &month, &day)
+stock GetDateFromString(&year, &month, &day, date[], dateFormat = YYYY_MM_DD , separator = '/')
 {
 	new data[3][5];
 	split(date, data, separator);
@@ -225,4 +315,35 @@ stock GetDateFromString(dateFormat, separator, date[], &year, &month, &day)
 	}
 
 	return 1;
+}
+
+stock DateToString(year, month, day, dateFormat = YYYY_MM_DD , separator = '/')
+{
+	new date[11];
+
+	switch(dateFormat)
+	{
+		case YYYY_DD_MM:
+		{
+			format(date, sizeof(date), "%04d%c%02d%c%02d", year, separator, day, separator, month);
+		}
+		case YYYY_MM_DD:
+		{
+			format(date, sizeof(date), "%04d%c%02d%c%02d", year, separator, month, separator, day);
+		}
+		case DD_MM_YYYY:
+		{
+			format(date, sizeof(date), "%02d%c%02d%c%04d", day, separator, month, separator, year);
+		}
+		case MM_DD_YYYY:
+		{
+			format(date, sizeof(date), "%02d%c%02d%c%04d", month, separator, day, separator, year);
+		}
+		default:
+		{
+			return "";
+		}
+	}
+
+	return date;
 }
