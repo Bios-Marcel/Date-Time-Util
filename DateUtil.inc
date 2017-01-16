@@ -10,7 +10,12 @@
 #define DD_MM_YYYY 2
 #define MM_DD_YYYY 3
 
-stock IsDateInPast(year, month = 99, day = 99)
+#define TIME_UNIT_HOUR 0
+#define TIME_UNIT_MINUTE 1
+#define TIME_UNIT_SECOND 2
+#define TIME_UNIT_MILLISECOND 3
+
+stock IsDateInPast(year, month, day)
 {
 	new actualDay, actualMonth, actualYear;
 	getdate(actualYear, actualMonth, actualDay);
@@ -18,7 +23,7 @@ stock IsDateInPast(year, month = 99, day = 99)
 	return IsDateInPastOf(year, month, day, actualYear, actualMonth, actualDay);
 }
 
-stock IsTimeInPast(hour, minute = 99, second = 99)
+stock IsTimeInPast(hour, minute, second)
 {
 	new actualHour, actualMinute, actualSecond;
 	gettime(actualHour, actualMinute, actualSecond);
@@ -37,7 +42,7 @@ stock IsDateTimeInPast(year, month, day, hour, minute, second)
 }
 
 
-stock IsDateInPastOf(year, month = 99, day = 99, year2, month2 = 98, day2 = 98)
+stock IsDateInPastOf(year, month, day, year2, month2, day2)
 {
 	if(!IsDateValid(year, month, day) || !IsDateValid(year2, month2, day2))
 	{
@@ -47,7 +52,7 @@ stock IsDateInPastOf(year, month = 99, day = 99, year2, month2 = 98, day2 = 98)
 	return year < year2 || year == year2 && (month < month2 || (month == month2 && day < day2));
 }
 
-stock  IsTimeInPastOf(hour, minute = 99, second = 99, hour2, minute2 = 98, second2 = 98)
+stock  IsTimeInPastOf(hour, minute, second, hour2, minute2, second)
 {
 	if(!IsTimeValid(hour, minute, second) || !IsTimeValid(hour2, minute2, second2))
 	{
@@ -72,19 +77,19 @@ stock GetDaysOfMonth(year, month)
 	return (month < 1 || month > 12) ? -1 : (month == 2) ? (28 + IsLeapYear(year)) : 31 - (month - 1) % 7 % 2;
 }
 
-stock IsDateValid(year, month, day)
+stock IsDateValid(year, month = 1, day = 1)
 {
 	return month >= 1 && month <= 12 && day >= 1 && day <= GetDaysOfMonth(year, month);
 }
 
-stock IsTimeValid(hour, minute, second)
+stock IsTimeValid(hour, minute = 0, second = 0, millisecond = 0)
 {
-	return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59 && second >= 0 && second <= 59;
+	return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59 && second >= 0 && second <= 59 && millisecond >= 0 && millisecond >= 999;
 }
 
-stock IsDateTimeValid(year, month, day, hour, minute, second)
+stock IsDateTimeValid(year, month, day, hour, minute = 0, second = 0, millisecond = 0)
 {
-	return IsDateValid(year, month, day) && IsTimeValid(hour, minute, seconds);
+	return IsDateValid(year, month, day) && IsTimeValid(hour, minute, seconds, millisecond);
 }
 
 stock DateToDays(year, month, day)
@@ -159,16 +164,135 @@ stock DaysToDate(days, &year, &month, &day)
 	}
 }
 
-stock TimeToSeconds(hour, minute, second)
-{
-	return (hour * 60 * 60) + (minute * 60) + second;
-}
-
 stock SecondsToTime(seconds, &hour, &minute, &second)
 {
 	hour = (seconds / 60) / 60;
 	minute = (seconds / 60) % 60;
 	second = seconds % 60;
+}
+
+stock ConvertTimeToTimeUnit(unitOutput, hour, minute = 0, second = 0, millisecond = 0)
+{
+	if(!IsTimeValid(hour, minute, second, millisecond))
+	{
+		return -1;
+	}
+
+	new converted = 0;
+
+	if(unitOutput != TIME_UNIT_MILLISECOND)
+	{
+		converted = ConvertTimeToTimeUnit(TIME_UNIT_MILLISECOND, hour, minute, second, millisecond);
+	}
+
+	switch(unitOutput)
+	{
+		case TIME_UNIT_HOUR:
+		{
+			converted = converted / 1000 / 60 / 60;
+		}
+		case TIME_UNIT_MINUTE:
+		{
+			converted = converted / 1000 / 60;
+		}
+		case TIME_UNIT_SECOND:
+		{
+			converted = converted / 1000;
+		}
+		case TIME_UNIT_MILLISECOND:
+		{
+			converted = (hour * 60 * 60 * 1000) + (minute * 60 * 1000) + (second * 1000) + millisecond;
+		}
+	}
+
+	return converted;
+}
+
+// stock ConvertTimeUnitToTime(unitInput, time, &hour = 0, &minute = 0, &second = 0, &millisecond = 0)
+// {
+// TODO(MSC) finish
+// }
+
+//TODO(MSC) Write Unit Tests
+stock ConvertTimeUnitToTimeUnit(unitInput, unitOutput, time)
+{
+	switch(unitInput)
+	{
+		case TIME_UNIT_HOUR:
+		{
+			switch(unitOutput)
+			{
+				case TIME_UNIT_MINUTE:
+				{
+					time *= 60;
+				}
+				case TIME_UNIT_SECOND:
+				{
+					time = time * 60 * 60;
+				}
+				case TIME_UNIT_MILLISECOND:
+				{
+					time = time * 60 * 60 * 1000;
+				}	
+			}
+		}
+		case TIME_UNIT_MINUTE:
+		{
+			switch(unitOutput)
+			{
+				case TIME_UNIT_HOUR:
+				{
+					time /= 60;
+				}
+				case TIME_UNIT_SECOND:
+				{
+					time *= 60;
+				}
+				case TIME_UNIT_MILLISECOND:
+				{
+					time = time * 60 * 1000;
+				}	
+			}
+		}
+		case TIME_UNIT_SECOND:
+		{
+			switch(unitOutput)
+			{
+				case TIME_UNIT_HOUR:
+				{
+					time = time / 60 / 60;
+				}
+				case TIME_UNIT_MINUTE:
+				{
+					time /= 60;
+				}
+				case TIME_UNIT_MILLISECOND:
+				{
+					time *= 1000;
+				}	
+			}
+		}
+		case TIME_UNIT_MILLISECOND:
+		{
+			switch(unitOutput)
+			{
+				case TIME_UNIT_HOUR:
+				{
+					time = time / 1000 / 60 / 60;
+				}
+				case TIME_UNIT_MINUTE:
+				{
+					time = time / 1000 / 60;
+				}
+				case TIME_UNIT_SECOND:
+				{
+					time /= 1000;
+				}
+			}
+		}	
+	}
+
+	return time;
 }
 
 stock GetDateDiff(year, month, day, year2, month2, day2)
@@ -201,13 +325,15 @@ stock IsTimeInRangeOf(hour, minute, second, hourEarlier, minuteEarlier, secondEa
 	{
 		return 0;
 	}
-	else if(hour == hourEarlier)
+
+	if(hour == hourEarlier)
 	{
 		if(minute < minuteEarlier)
 		{
 			return 0;
 		}
-		else if(minute == minuteEarlier)
+		
+		if(minute == minuteEarlier)
 		{
 			if(second < secondEarlier)
 			{
@@ -221,13 +347,15 @@ stock IsTimeInRangeOf(hour, minute, second, hourEarlier, minuteEarlier, secondEa
 		{
 			return 0;
 		}
-		else if(hour <= hourlatest)
+		
+		if(hour <= hourlatest)
 		{
 			if(minute > minuteLater)
 			{
 				return 0;
 			}
-			else if(minute <= minuteLater)
+			
+			if(minute <= minuteLater)
 			{
 				if(second > secondLater)
 				{
@@ -372,4 +500,10 @@ stock DateToString(year, month, day, dateFormat = YYYY_MM_DD , separator = '/')
 	}
 
 	return date;
+}
+
+//DEPRECATED METHODS
+stock TimeToSeconds(hour, minute, second)
+{
+	#error TimeToSeconds is deprecated, please use ConvertTimeToTimeUnit(TIME_UNIT_SECOND, hour, minute (OPTIONAL PARAMETER), second = 0 (OPTIONAL PARAMETER),, millisecond = 0 (OPTIONAL PARAMETER)) instead.
 }
