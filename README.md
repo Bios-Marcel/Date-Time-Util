@@ -18,6 +18,24 @@ and include it into your gamemode or filterscript like this:
 #include <DateUtil>
 ```
 
+## I am getting errors, it says that some functions are not defined!
+
+You might get these errors because your code is outdated, to fix the problem try the following.
+
+Add this:
+
+```Pawn
+#define USE_BWC
+```
+
+in front of this:
+
+```Pawn
+#include <DateUtil>
+```
+
+doing that will automatically include the backwards compatibility include, if it exists.
+
 ## Something is not working like it should!
 
 If you happen to find any bugs or are encountering any problems, create an [**issue**](https://github.com/Bios-Marcel/Date-Time-Util/issues/new)
