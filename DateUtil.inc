@@ -1,5 +1,9 @@
 #include <a_samp>
 
+#if defined USE_BWC
+	#tryinclude <DateUtilBWC>
+#endif
+
 //Start at year 1 after christi
 #if !defined INITIAL_YEAR
 	#define INITIAL_YEAR 1
@@ -52,7 +56,7 @@ stock IsDateInPastOf(year, month, day, year2, month2, day2)
 	return year < year2 || year == year2 && (month < month2 || (month == month2 && day < day2));
 }
 
-stock  IsTimeInPastOf(hour, minute, second, hour2, minute2, second)
+stock  IsTimeInPastOf(hour, minute, second, hour2, minute2, second2)
 {
 	if(!IsTimeValid(hour, minute, second) || !IsTimeValid(hour2, minute2, second2))
 	{
@@ -84,7 +88,7 @@ stock IsDateValid(year, month = 1, day = 1)
 
 stock IsTimeValid(hour, minute = 0, second = 0, millisecond = 0)
 {
-	return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59 && second >= 0 && second <= 59 && millisecond >= 0 && millisecond >= 999;
+	return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59 && second >= 0 && second <= 59 && millisecond >= 0 && millisecond <= 999;
 }
 
 stock IsDateTimeValid(year, month, day, hour, minute = 0, second = 0, millisecond = 0)
@@ -500,10 +504,4 @@ stock DateToString(year, month, day, dateFormat = YYYY_MM_DD , separator = '/')
 	}
 
 	return date;
-}
-
-//DEPRECATED METHODS
-stock TimeToSeconds(hour, minute, second)
-{
-	#error TimeToSeconds is deprecated, please use ConvertTimeToTimeUnit(TIME_UNIT_SECOND, hour, minute (OPTIONAL PARAMETER), second = 0 (OPTIONAL PARAMETER),, millisecond = 0 (OPTIONAL PARAMETER)) instead.
 }
