@@ -172,20 +172,38 @@ stock DaysToDate(days, &year, &month, &day)
 	}
 }
 
-stock SecondsToTime(seconds, &hour, &minute, &second)
+stock ConvertTimeUnitToTime(unitInput, time, &hour = 0, &minute = 0, &second = 0, &millisecond = 0)
 {
-	hour = (seconds / 60) / 60;
-	minute = (seconds / 60) % 60;
-	second = seconds % 60;
+	switch(unitInput)
+	{
+		case TIME_UNIT_HOUR:
+		{
+			hour = time;
+			minute = second = millisecond = 0;
+		}
+		case TIME_UNIT_MINUTE:
+		{
+			hour = time / 60;
+			minute = time % 60;
+		}
+		case TIME_UNIT_SECOND:
+		{
+			hour = time / 60 / 60;
+			minute = time / 60 % 60;
+			second = time % 60;
+		}
+		case TIME_UNIT_MILLISECOND:
+		{
+			hour = time / 1000 / 60 / 60;
+			minute = time / 1000 / 60 % 60;
+			second = time / 1000 % 60;
+			millisecond = time % 1000;
+		}
+	}
 }
 
 stock ConvertTimeToTimeUnit(unitOutput, hour, minute = 0, second = 0, millisecond = 0)
 {
-	if(!IsTimeValid(hour, minute, second, millisecond))
-	{
-		return -1;
-	}
-
 	new converted = 0;
 
 	if(unitOutput != TIME_UNIT_MILLISECOND)
@@ -215,11 +233,6 @@ stock ConvertTimeToTimeUnit(unitOutput, hour, minute = 0, second = 0, millisecon
 
 	return converted;
 }
-
-// stock ConvertTimeUnitToTime(unitInput, time, &hour = 0, &minute = 0, &second = 0, &millisecond = 0)
-// {
-// TODO(MSC) finish
-// }
 
 //TODO(MSC) Write Unit Tests
 stock ConvertTimeUnitToTimeUnit(unitInput, unitOutput, time)

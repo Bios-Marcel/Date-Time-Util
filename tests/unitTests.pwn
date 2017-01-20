@@ -84,11 +84,11 @@ public OnFilterScriptInit()
 
 	TEST_SUITE_START
 		new hour, minute, second;
-		SecondsToTime(70, hour, minute, second);
+		ConvertTimeUnitToTime(TIME_UNIT_SECOND, 70, hour, minute, second);
 		assertThat("SecondsToTime(70, X, Y, Z) - 1", hour, 0);
 		assertThat("SecondsToTime(70, X, Y, Z) - 2", minute, 1);
 		assertThat("SecondsToTime(70, X, Y, Z) - 3", second, 10);
-		SecondsToTime(3920, hour, minute, second);
+		ConvertTimeUnitToTime(TIME_UNIT_SECOND, 3920, hour, minute, second);
 		assertThat("SecondsToTime(70, X, Y, Z) - 1", hour, 1);
 		assertThat("SecondsToTime(70, X, Y, Z) - 2", minute, 5);
 		assertThat("SecondsToTime(70, X, Y, Z) - 3", second, 20);	
