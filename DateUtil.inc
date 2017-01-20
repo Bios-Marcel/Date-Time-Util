@@ -1,12 +1,13 @@
 #include <a_samp>
 
 #if defined USE_BWC
+	#tryinclude <DateUtil\DateUtilBWC>
 	#tryinclude <DateUtilBWC>
 #endif
 
 //Start at year 1 after christi
 #if !defined INITIAL_YEAR
-	#define INITIAL_YEAR 1
+	#define INITIAL_YEAR 1970
 #endif
 
 #define YYYY_DD_MM 0
@@ -96,12 +97,15 @@ stock IsDateTimeValid(year, month, day, hour, minute = 0, second = 0, millisecon
 	return IsDateValid(year, month, day) && IsTimeValid(hour, minute, seconds, millisecond);
 }
 
-stock DateToDays(year, month, day)
+stock DateToDays(year, month, day, bool:validDate = false)
 {
-	if(!IsDateValid(year, month, day))
+	if(!validDate)
 	{
-		return -1;
-	}	
+		if(!IsDateValid(year, month, day))
+		{
+			return -1;
+		}	
+	}
 
 	new days = 0;
 
@@ -299,7 +303,7 @@ stock ConvertTimeUnitToTimeUnit(unitInput, unitOutput, time)
 	return time;
 }
 
-stock GetDateDiff(year, month, day, year2, month2, day2)
+stock GetDateDifference(year, month, day, year2, month2, day2)
 {
 	if(!IsDateValid(year, month, day) || !IsDateValid(year2, month2, day2))
 	{
@@ -311,7 +315,7 @@ stock GetDateDiff(year, month, day, year2, month2, day2)
 	return difference < 0 ? difference * -1 : difference;
 }
 
-stock GetTimeDiff(hour, minute, second, hour2, minute2, second2)
+stock GetTimeDifference(hour, minute, second, hour2, minute2, second2) 
 {
 	if(!IsTimeValid(hour, minute, second) || !IsTimeValid(hour2, minute2, second2))
 	{

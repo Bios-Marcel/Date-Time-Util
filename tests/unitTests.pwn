@@ -102,15 +102,16 @@ public OnFilterScriptInit()
 	TEST_SUITE_END
 
 	TEST_SUITE_START
-		assertThat("GetDateDiff(2017, 1, 1, 2017, 1, 5)", GetDateDiff(2017, 1, 1, 2017, 1, 5), 4);
-		assertThat("GetDateDiff(2017, 1, 1, 2017, 1, 5)", GetDateDiff(2017, 1, 1, 2017, 1, 1), 0);	
+		assertThat("GetDateDiff(2017, 1, 1, 2017, 1, 5)", GetDateDifference(2017, 1, 1, 2017, 1, 5), 4);
+		assertThat("GetDateDiff(2017, 1, 1, 2017, 1, 5)", GetDateDifference(2017, 1, 1, 2017, 1, 1), 0);	
 	TEST_SUITE_END
 
-	TEST_SUITE_START
-		assertThat("GetTimeDiff(24, 0, 0, 0, 0, 0)", GetTimeDiff(24, 0, 0, 0, 0, 0), -1);
-		assertThat("GetTimeDiff(0, 0, 0, 23, 0, 0)", GetTimeDiff(23, 0, 0, 0, 0, 0), 82800);
+	TEST_SUITE_START_EX(GetTimeDifference)
+		assertThat("GetTimeDiff(24, 0, 0, 0, 0, 0)", GetTimeDifference(24, 0, 0, 0, 0, 0), -1);
+		assertThat("GetTimeDiff(0, 0, 0, 23, 0, 0)", GetTimeDifference(23, 0, 0, 0, 0, 0), 82800);
 	TEST_SUITE_END
 
 	print(" ");
 	print("End Unit Testing of Date / Time Util");
+	// SendRconCommand("exit");
 }
