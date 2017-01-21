@@ -120,6 +120,14 @@ public OnFilterScriptInit()
 		ASSERT_STRING(GetDayOfWeekName(GetDayOfWeek(2017, 1, 8)), "Sunday");
 	TEST_SUITE_END
 
+	TEST_SUITE_START_EX(DateToString)
+		ASSERT_STRING(DateToString(2017, 1, 1), "2017/01/01");
+		ASSERT_STRING(DateToString(2017, 1, 2, DD_MM_YYYY, '-'), "02-01-2017");
+		ASSERT_STRING(DateToString(2017, 1, 2, MM_DD_YYYY, '-'), "01-02-2017");
+		ASSERT_STRING(DateToString(2017, 1, 2, YYYY_DD_MM, '-'), "2017-02-01");
+		ASSERT_STRING(DateToString(17, 1, 2, YYYY_DD_MM, '\\'), "0017\\02\\01");
+	TEST_SUITE_END
+
 	print(" ");
 	print("____________________________________________________________________________");
 	print(" ");
