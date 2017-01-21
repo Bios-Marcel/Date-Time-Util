@@ -20,6 +20,83 @@
 #define TIME_UNIT_SECOND 2
 #define TIME_UNIT_MILLISECOND 3
 
+//Months
+
+#define JANUARY 1
+#define FEBRUARY 2
+#define MARCH 3
+#define APRIL 4
+#define MAY 5
+#define JUNE 6
+#define JULY 7
+#define AUGUST 8
+#define SEPTEMBER 9
+#define OCTOBER 10
+#define NOVEMBER 11
+#define DECEMBER 12
+
+new MONTH_NAMES[12][10] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+stock GetMonthName(month, bool:toLower = false)
+{
+	new monthName[10];
+
+	if(!IsMonthExistant(month))
+	{
+		return monthName;
+	}
+
+	if(toLower)
+	{
+		strcat(monthName, MONTH_NAMES[month - 1]);
+		monthName[0] = tolower(monthName[0]);
+		return monthName;
+	}
+	
+	return MONTH_NAMES[month - 1];
+}
+
+stock IsMonthExistant(month)
+{
+	return month >= JANUARY && month <= DECEMBER;
+}
+
+//Days of Week
+#define MONDAY 1
+#define TUESDAY 2
+#define WEDNESDAY 3
+#define THURSDAY 4
+#define FRIDAY 5
+#define SATURDAY 6
+#define SUNDAY 7
+
+new DAY_NAMES[7][10] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+
+stock GetDayOfWeekName(day, bool:toLower = false)
+{
+	new dayName[10];
+
+	if(!IsDayOfWeekExistant(day))
+	{
+		return dayName;
+	}
+
+	if(toLower)
+	{
+
+		strcat(dayName, DAY_NAMES[day - 1]);
+		dayName[0] = tolower(dayName[0]);
+		return dayName;
+	}
+
+	return DAY_NAMES[day - 1];
+}
+
+stock IsDayOfWeekExistant(day)
+{
+	return day >= MONDAY && day <= SUNDAY;	
+}
+
 stock IsDateInPast(year, month, day)
 {
 	new actualDay, actualMonth, actualYear;
@@ -57,7 +134,7 @@ stock IsDateInPastOf(year, month, day, year2, month2, day2)
 	return year < year2 || year == year2 && (month < month2 || (month == month2 && day < day2));
 }
 
-stock  IsTimeInPastOf(hour, minute, second, hour2, minute2, second2)
+stock IsTimeInPastOf(hour, minute, second, hour2, minute2, second2)
 {
 	if(!IsTimeValid(hour, minute, second) || !IsTimeValid(hour2, minute2, second2))
 	{
@@ -389,6 +466,8 @@ stock IsTimeInRangeOf(hour, minute, second, hourEarlier, minuteEarlier, secondEa
 	return 1;
 }
 
+//TODO(msc) Rethink if below ideas are good
+//TODO(MSC) Instead Create Functions: AddToDate(DAY/MONTH/YEAR, amount, year, month, day)
 stock AddDaysToDate(&year, &month, &day, amount)
 {
 	new days = DateToDays(year, month, day);
@@ -399,6 +478,7 @@ stock AddDaysToDate(&year, &month, &day, amount)
 	return days;
 }
 
+//TODO(MSC) Replace with AddTimeUnitToTime (after it is functioning)
 stock AddSecondsToTime(&hour, &minute, &second, amount)
 {
 	new newHour = hour;
@@ -417,25 +497,14 @@ stock AddSecondsToTime(&hour, &minute, &second, amount)
 	}
 }
 
-//http://wiki.sa-mp.com/wiki/Code_Snippets#Split
-static stock split(const strsrc[], strdest[][], delimiter)
-{
-    new i, li;
-    new aNum;
-    new len;
-    while(i <= strlen(strsrc))
-    {
-        if(strsrc[i] == delimiter || i == strlen(strsrc))
-        {
-            len = strmid(strdest[aNum], strsrc, li, i, 128);
-            strdest[aNum][len] = 0;
-            li = i+1;
-            aNum++;
-        }
-        i++;
-    }
-    return 1;
-}
+//TODO(MSC) Complete Functions
+// stock AddTimeUnitToTime(unitInput, amount, &hour = 0, &minute = 0 &second = 0, &millisecond = 0)
+// {
+// 	switch(unitInput)
+// 	{
+
+// 	}
+// }
 
 stock StringToDate(&year, &month, &day, date[], dateFormat = YYYY_MM_DD , separator = '/')
 {
@@ -514,11 +583,54 @@ stock DateToString(year, month, day, dateFormat = YYYY_MM_DD , separator = '/')
 		{
 			format(date, sizeof(date), "%02d%c%02d%c%04d", month, separator, day, separator, year);
 		}
-		default:
-		{
-			return "";
-		}
 	}
 
 	return date;
+}
+
+stock GetDayOfWeek(year, month, day)
+{
+	if(!IsDateValid(year, month, day))
+	{
+		return -1;
+	}
+
+	new dayOfWeek = floorMod(DateToDays(year, month, day) + 3, 7);
+	return dayOfWeek;
+}
+
+//Stuff that doesn't really belong into this include
+//http://wiki.sa-mp.com/wiki/Code_Snippets#Split
+static stock split(const strsrc[], strdest[][], delimiter)
+{
+	new i, li;
+	new aNum;
+	new len;
+	while(i <= strlen(strsrc))
+	{
+		if(strsrc[i] == delimiter || i == strlen(strsrc))
+		{
+			len = strmid(strdest[aNum], strsrc, li, i, 128);
+			strdest[aNum][len] = 0;
+			li = i+1;
+			aNum++;
+		}
+		i++;
+	}
+	return 1;
+}
+
+//TODO(msc) Create a Math library?
+stock floorMod(dividend, divisor)
+{
+	return dividend - floorDiv(dividend, divisor) * divisor;
+}
+
+stock floorDiv(dividend, divisor)
+{
+	new result = dividend / divisor;
+	if ((dividend ^ divisor) < 0 && (result * divisor != dividend)) {
+		result--;
+	}
+	return result;
 }

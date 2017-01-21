@@ -108,6 +108,18 @@ public OnFilterScriptInit()
 		ASSERT(GetTimeDifference(23, 0, 0, 0, 0, 0), 82800);
 	TEST_SUITE_END
 
+	TEST_SUITE_START_EX(GetDayOfWeekName)
+		ASSERT_STRING(GetDayOfWeekName(GetDayOfWeek(2017, 0, 1)), "");
+		ASSERT_STRING(GetDayOfWeekName(GetDayOfWeek(2017, 1, 1)), "Sunday");
+		ASSERT_STRING(GetDayOfWeekName(GetDayOfWeek(2017, 1, 2)), "Monday");
+		ASSERT_STRING(GetDayOfWeekName(GetDayOfWeek(2017, 1, 3)), "Tuesday");
+		ASSERT_STRING(GetDayOfWeekName(GetDayOfWeek(2017, 1, 4)), "Wednesday");
+		ASSERT_STRING(GetDayOfWeekName(GetDayOfWeek(2017, 1, 5)), "Thursday");
+		ASSERT_STRING(GetDayOfWeekName(GetDayOfWeek(2017, 1, 6)), "Friday");
+		ASSERT_STRING(GetDayOfWeekName(GetDayOfWeek(2017, 1, 7)), "Saturday");
+		ASSERT_STRING(GetDayOfWeekName(GetDayOfWeek(2017, 1, 8)), "Sunday");
+	TEST_SUITE_END
+
 	print(" ");
 	print("____________________________________________________________________________");
 	print(" ");
