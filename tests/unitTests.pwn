@@ -5,6 +5,7 @@
 public OnFilterScriptInit()
 {
 	print("Start Date / Time Util Unit Testing");
+	print("____________________________________________________________________________");
 	print(" ");
 
 	TEST_SUITE_START_EX(IsDateInPast)
@@ -111,6 +112,8 @@ public OnFilterScriptInit()
 		assertThat("GetTimeDiff(0, 0, 0, 23, 0, 0)", GetTimeDifference(23, 0, 0, 0, 0, 0), 82800);
 	TEST_SUITE_END
 
+	print(" ");
+	print("____________________________________________________________________________");
 	print(" ");
 	print("End Unit Testing of Date / Time Util");
 	// SendRconCommand("exit");
